@@ -17,10 +17,15 @@ export const userSlice = createSlice({
         userID: "",
         userShortId: "",
         isUserLoggedIn: false,
-        test: "lalala",
+        // test: "lalala",
         userProjectsList: [],
+        // userData: [],
+        roles:{owner: false,admin: false,user: false}
     },
     reducers: {
+        // updateUserData: (state, action) => {
+        //     state.userData = action.payload;
+        // },
         updateAccessToken: (state, action) => {
             state.accessToken = action.payload;
         },
@@ -36,10 +41,12 @@ export const userSlice = createSlice({
         updateUserProjectsList: (state, action) => {
             state.userProjectsList = action.payload;
         },
+        updateUserRoles: (state, action) => {
+            state.roles = action.payload;
+        },
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { updateAccessToken, updateUsername, updateUserShortId, updateIsUserLoggedIn, updateUserProjectsList } = userSlice.actions
-
+export const { updateAccessToken, updateUsername, updateUserShortId, updateIsUserLoggedIn, updateUserProjectsList, updateUserRoles } = userSlice.actions
 export default userSlice.reducer

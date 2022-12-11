@@ -6,27 +6,24 @@ const jwt = require("jsonwebtoken");
 
 let userSchema = new mongoose.Schema({
     // _id: String,
-    shortID: String,
+    shortId: String,
     username:String,
     name: String, 
-    profilePic: String,
+    profilePic: {type: String, default: ""},
     bio:String,
     email:String,
     password:{type:String, default:"123123"},
     projects:{owner: [String], member: [String]},
     notifications: [String],
     dateCreated:{type:Number, default: new Date().getTime()},
-    
-    // activity: [String],
-    // date:{type:String, default: Date.now()},
-    // role:{type:String, default:"USER"}
+    activity: [String],
 })
 
 exports.UserModel = mongoose.model("users",userSchema);
 
 exports.validateUser = (_userToValidate) =>{
     let joiUserSchema = Joi.object({
-        shortID: Joi.string().min(5).max(12).required(),
+        shortId: Joi.string().min(5).max(12).required(),
         username: Joi.string().min(5).max(20).required(),
         email: Joi.string().min(6).max(99).required().email(),
         password: Joi.string().min(6).max(15).required(),

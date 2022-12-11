@@ -3,7 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 
 //other
 import axios from 'axios';
-import { nanoid } from 'nanoid'; 
+// import { nanoid } from 'nanoid'; 
+// import { newNanoID} from '../utils/nanoid';
+import {customNanoid } from '../utils/nanoid';
 
 //mui
 import { Container, Box, Button, TextField, Typography, Card, Input, FormLabel, Stack, Grid, FormGroup, FormControl, Alert, Paper } from '@mui/material';
@@ -24,7 +26,7 @@ export default function Signup() {
 
     const url = 'http://127.0.0.1:4000/signup';
     const data = {
-      shortID: nanoid(10),
+      shortId: customNanoid(),
       username: usernameInputRef.current.value,
       email: emailInputRef.current.value,
       password: passwordInputRef.current.value,
@@ -72,6 +74,7 @@ export default function Signup() {
               {alertObj.msg}
             </Alert>
           </FormControl>
+          <Button onClick={() => {window.alert(customNanoid())}}>click</Button>
         </Paper>
       </Container>
     </Box>

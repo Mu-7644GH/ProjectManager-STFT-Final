@@ -4,10 +4,12 @@ import { Box, Card, IconButton, Stack, Typography } from '@mui/material';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import { updateOpenProjectName, updateSnackbar} from '../redux/projectsSlice'
 
 import { SettingsOutlined, ChatBubbleOutlineOutlined, DeleteForeverOutlined } from '@mui/icons-material';
 
 import axios from 'axios'
+import { deleteProject } from '../services/ProjectServices';
 
 export default function ProjectSummary(props) {
 
@@ -15,40 +17,49 @@ export default function ProjectSummary(props) {
 
     const aaa = { width: "100%", height: "20%", px: 4, gap: 1, };
     let currentToken = useSelector((state) => state.accessToken)
-    const currentProjectName = useSelector((state) => state.currentProjectName);
+    const {openProjectName} = useSelector((state) => state.projects);
 
-    const handelProjectDelete = () => {
-        const url = 'http://127.0.0.1:4000/projects/del/'+ props.pProjectShortID;
-        const config = {
-            headers: { authtoken: currentToken }
-        }
+    const handelProjectDelete = async() => {
+        let res = await deleteProject(props.pProjectShortId, props.membership, localStorage.getItem('token'));
+        dispatch(updateSnackbar({isOpen: true, msg: res.msg, sev: res.sev}));
+        props.deleteFromItem();
 
-        axios.delete(url, config);
+        // const url = 'http://127.0.0.1:4000/projects/'+ props.pProjectShortID;
+        // const config = {
+            // headers: { authtoken: localStorage.getItem('token'), membership: props.membership }
+        // }
+        
+        // let response = await axios.delete(url, config).then(response => response);
+        
     }
 
+
     return (
-        <Card elevation={3} sx={{ display: "flex", minHeight: "200px", width: "70%", my: 3, py: 1 }}>
+        <Card elevation={3} sx={{ display: "flex", minHeight: "150px", width: "70%", my: 3, py: 1 }}>
             {/* <img src='../assets/people/0.jpg' /> */}
-            <Box component="img" sx={{ width: "35%" }} alt="aaaa" src='../assets/people/0.jpg' border={1} mx={1} />
+            <Box  sx={{ width: "35%", backgroundImage: `url(${props.pBG})`, backgroundSize: "cover", backgroundRepeat: "no-repeat", }} alt="aaaa" src='../assets/people/0.jpg' border={1} mx={1} />
             <Stack flex={1} padding={1}>
                 <Stack height="80%">
-                    <LinkR state={{ projectName: props.pProjectName}} to={"/p/"+props.pProjectShortID+ "/" + props.pProjectName.replace(/\s+/g, '')} onClick={ () => {dispatch({type: "updateCurrentProjectName", payload: props.pProjectName}) }}>
-                        <Typography variant='subtitle1' sx={{ fontWeight: 'bold' }}>
-                            {props.pProjectName}
+                    <LinkR style={{textDecoration: "none", color:"black", fontWeight: "bold"}} state={{ projectName: props?.pProjectName}} to={"/p/"+props?.pProjectShortId+ "/" + props?.pProjectName?.replace(/\s+/g, '_')} onClick={ () => {dispatch(updateOpenProjectName(props.pProjectName)) }}>
+                        <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                            {props?.pProjectName}
                         </Typography>
                     </LinkR>
                     <Typography variant='body2'>
-                        {props.pProjectDescription}
+                        {props?.pProjectDescription}
                     </Typography>
+                    {/* <Typography>
+                        {props?.pProjectShortID}
+                    </Typography> */}
                 </Stack>
                 <Stack direction="row" justifyContent={"end"} sx={aaa}>
-                    <IconButton sx={{ "&:hover": { color: "inherit" } }}>
+                    {/* <IconButton sx={{ "&:hover": { color: "inherit" } }}>
                         <SettingsOutlined fontSize="large" />
-                    </IconButton>
-                    <IconButton sx={{ "&:hover": { color: "inherit" } }}>
+                    </IconButton> */}
+                    {/* <IconButton sx={{ "&:hover": { color: "inherit" } }}>
                         <ChatBubbleOutlineOutlined fontSize="large" />
-                    </IconButton>
-                    <IconButton sx={{ "&:hover": { color: "inherit" } }} onClick={handelProjectDelete}>
+                    </IconButton> */}
+                    <IconButton sx={{ "&:hover": { color: "inherit" }, display: props.membership !== "owner"? "none": "inline" } } onClick={handelProjectDelete}>
                         <DeleteForeverOutlined fontSize="large" />
                     </IconButton>
 

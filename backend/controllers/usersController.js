@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
-const { UserModel, validateUser} = require("../models/userModel");
+const { ProjectModel } = require("../models/projectModel");
+const { UserModel, validateUser } = require("../models/userModel");
 
-exports.handleUserCreation = async (req, res) => { 
+exports.handleUserCreation = async (req, res) => {
 
     let validatedBody = validateUser(req.body);
     // console.log(req.body)
@@ -22,10 +23,37 @@ exports.handleUserCreation = async (req, res) => {
         // next();
     } catch (error) {
         console.log(error);
-        return res.json({status: false, msg: "error!!", error});
+        return res.json({ status: false, msg: "error!!", error });
     }
 
 }
 
-// exports./handleUserLogout = async
+exports.handleUserRoles_get = async (req, res) => {
+    // req.tokenData
+    let user = await UserModel.findById(req.tokenData._id);
+    let project = await ProjectModel.findOne({ shortId: req.params.shortId });
+
+    let rolesObj = {};
+
+    if (project.ownerShortId === user.shortId) {
+        rolesObj.owner = true;
+    } else {
+        rolesObj.owner = false;
+    }
+    if (project.members.admins.includes(req.tokenData._id)) {
+        rolesObj.admin = true;
+    } else {
+        rolesObj.admin = false;
+    }
+    if (project.members.users.includes(req.tokenData._id)) {
+        rolesObj.user = true;
+    } else {
+        rolesObj.user = false;
+    }
+
+    return res.json({ status: 1, msg: "done Roles-Object", data: rolesObj });
+
+
+}
+
 

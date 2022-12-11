@@ -8,11 +8,13 @@ let taskSchema = new mongoose.Schema({
     title:String,
     description:{type:String, default: null},
     tags:[String],
-    ownerUN: {type:String, default: null},
+    ownerUsername: {type:String, default: null},
     isOnHold:{type: Boolean, default:false},
+    isDone:{type: Boolean, default:false},
     attachments:[String],
     dateCreated: {type:Number, default: new Date().getTime()},
     chat: [String],
+    listId: String,
 })
 
 exports.TaskModel = mongoose.model("tasks",taskSchema);
@@ -20,6 +22,7 @@ exports.TaskModel = mongoose.model("tasks",taskSchema);
 exports.validateNewTask = (_newTaskToValidate) =>{
     let joiTaskSchema = Joi.object({
         title:Joi.string().min(1).max(30).required(),
+        listId: Joi.string().min(1).max(150).required(),
     })
     return joiTaskSchema.validate(_newTaskToValidate);
 }
@@ -35,6 +38,7 @@ exports.validateUpdatedTask = (_updatedTaskToValidate) =>{
         deadline:Joi.date(),
         isChecked:Joi.boolean(),
         state:Joi.string().valid("TODO", "DOING", "DONE", "DONE").insensitive(),
+        
     })
     return joiTaskSchema.validate(_updatedTaskToValidate);
 }

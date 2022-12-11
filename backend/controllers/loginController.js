@@ -19,7 +19,8 @@ exports.handleUserLogin = async (req, res) => {
     }
 
     let newToken = genToken(userData._id);
-    return res.json({ status: true, token: newToken, username: userData.username , shortID: userData.shortID });
+    console.log("USER ID:" + userData._id);
+    return res.json({ status: true, token: newToken, username: userData.username , shortId: userData.shortId });
 }
 
 // export default loginController;

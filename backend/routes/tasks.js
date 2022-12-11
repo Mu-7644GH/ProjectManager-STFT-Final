@@ -2,15 +2,17 @@ const express = require("express");
 const router = express.Router();
 
 const { tokenAuth } = require("../middleware/tokenAuthentication");
-const {handleNewTaskCreation, handleTaskDeletion, handleTasksList, handleTaskInfo, handleGetAllTasks, handleTasksReorder} = require('../controllers/tasksController')
+const { isProjectPublic } = require("../middleware/isProjectPublic");
+const {handleNewTaskCreation, handleTaskDeletion, handleTasksList, handleTaskEdit, handleTaskInfo, handleGetAllTasks, handleTasksReorder} = require('../controllers/tasksController')
 
-router.get("/getall/:projectID/:listID", handleTasksList);
+router.get("/getonelist/:shortId/:listId",isProjectPublic, tokenAuth, handleTasksList);
 router.get("/getall/:projectID/", handleGetAllTasks);
-router.post("/reorder/:shortid", tokenAuth, handleTasksReorder)
+// router.post("/reorder/:shortid", tokenAuth, handleTasksReorder)
+router.put("/:taskid", tokenAuth, handleTaskEdit)
 router.delete("/del/:projectID/:listID/:taskID", handleTaskDeletion);
 router.get("/getone/:projectID/:listID/:taskID", handleTaskInfo);
 router.post("/add/:projectID/:listID", handleNewTaskCreation);
-router.delete("/del/:projectID/:listID", handleTaskDeletion);
+// router.delete("/del/:projectID/:listID/:taskID", handleTaskDeletion);
 
 
 module.exports = router;
